@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<style>
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", sans-serif;
+    background: #eef1f5;
+    margin: 0;
+    padding: 20px;
+    color: #333;
+  }
+  .container {
+    max-width: 700px;
+    margin: 0 0 0 auto;
+    background: #fff;
+    border-radius: 12px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+  }
+  /* 標題區 */
+  .header {
+    background: linear-gradient(135deg, #1a1a2e, #16213e, #0f3460);
+    color: #fff;
+    padding: 36px 28px;
+    text-align: center;
+    position: relative;
+  }
+  .header::after {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background: linear-gradient(90deg, #e94560, #f5a623, #4A90D9, #50C878);
+  }
+  .header h1 {
+    margin: 0 0 10px 0;
+    font-size: 26px;
+    letter-spacing: 3px;
+    text-shadow: 0 2px 8px rgba(0,0,0,0.3);
+  }
+  .header .date {
+    font-size: 14px;
+    color: #b0bec5;
+  }
+  .header .stats {
+    margin-top: 14px;
+    font-size: 13px;
+    color: #78909c;
+  }
+  /* 目錄 */
+  .toc {
+    padding: 22px 28px;
+    background: linear-gradient(180deg, #f8f9fb, #fff);
+    border-bottom: 1px solid #e8ecf0;
+  }
+  .toc h2 {
+    font-size: 15px;
+    margin: 0 0 14px 0;
+    color: #546e7a;
+    letter-spacing: 1px;
+  }
+  .toc-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+  }
+  .toc-item a {
+    display: inline-block;
+    padding: 7px 16px;
+    border-radius: 20px;
+    text-decoration: none;
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.15);
+    transition: transform 0.15s, box-shadow 0.15s;
+  }
+  .toc-item a:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+  }
+  .count {
+    display: inline-block;
+    background: rgba(255,255,255,0.3);
+    border-radius: 10px;
+    padding: 1px 8px;
+    margin-left: 5px;
+    font-size: 11px;
+  }
+  /* 分類區塊 */
+  .category-section {
+    padding: 24px 28px;
+    border-bottom: 1px solid #e8ecf0;
+  }
+  .category-section:last-of-type {
+    border-bottom: none;
+  }
+  .category-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 18px 0;
+    padding-bottom: 10px;
+    border-bottom: 3px solid;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .category-title .badge {
+    font-size: 12px;
+    color: #fff;
+    padding: 3px 12px;
+    border-radius: 12px;
+    font-weight: 400;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.12);
+  }
+  /* 新聞卡片 */
+  .news-item {
+    margin-bottom: 10px;
+    padding: 12px 14px;
+    background: #f8f9fb;
+    border-radius: 8px;
+    border-left: 4px solid;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    transition: box-shadow 0.15s;
+  }
+  .news-item:hover {
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+  }
+  .news-item h3 {
+    margin: 0;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+  .news-item h3 a {
+    color: #1a1a2e;
+    text-decoration: none;
+  }
+  .news-item h3 a:hover {
+    color: #0f3460;
+    text-decoration: underline;
+  }
+  /* 子分類分隔線 */
+  .sub-category {
+    margin-top: 18px;
+    padding-top: 14px;
+    border-top: 1px dashed #dde3e9;
+  }
+  .sub-category:first-child {
+    margin-top: 0;
+    padding-top: 0;
+    border-top: none;
+  }
+  /* 頁尾 */
+  .footer {
+    padding: 22px 28px;
+    text-align: center;
+    font-size: 12px;
+    color: #90a4ae;
+    background: #f8f9fb;
+    border-top: 1px solid #e8ecf0;
+  }
+</style>
+</head>
+<body>
+<div class="container">
+  <!-- 標題區 -->
+  <a name="top"></a>
+  <div class="header">
+    <h1>每日新聞整理</h1>
+    <div class="date">2026 年 03 月 29 日（Sunday）</div>
+    <div class="stats">共 46 則新聞，涵蓋 8 個主題</div>
+  </div>
+
+  <!-- 目錄 -->
+  <div class="toc">
+    <h2>▎快速導覽</h2>
+    <ul class="toc-list">
+      <li class="toc-item" style="list-style:none;"><details style="margin:2px 0;"><summary style="cursor:pointer; display:inline-block;"><a href="#cat-AI-科技" style="background:#4A90D9;" onclick="event.stopPropagation();">AI 科技<span class="count">16</span></a></summary><ul style="margin:4px 0 4px 20px; padding:0; list-style:none;"><li style="margin: 3px 0;"><a href="#sub-AI-科技-AI應用與產品" style="color:#4A90D9; text-decoration:none; font-size:13px;">└ AI應用與產品 <span style="color:#999;">(3)</span></a></li>
+<li style="margin: 3px 0;"><a href="#sub-AI-科技-AI倫理與安全" style="color:#4A90D9; text-decoration:none; font-size:13px;">└ AI倫理與安全 <span style="color:#999;">(2)</span></a></li>
+<li style="margin: 3px 0;"><a href="#sub-AI-科技-企業動態" style="color:#4A90D9; text-decoration:none; font-size:13px;">└ 企業動態 <span style="color:#999;">(3)</span></a></li>
+<li style="margin: 3px 0;"><a href="#sub-AI-科技-法律與監管" style="color:#4A90D9; text-decoration:none; font-size:13px;">└ 法律與監管 <span style="color:#999;">(2)</span></a></li>
+<li style="margin: 3px 0;"><a href="#sub-AI-科技-地緣政治與衝突" style="color:#4A90D9; text-decoration:none; font-size:13px;">└ 地緣政治與衝突 <span style="color:#999;">(1)</span></a></li>
+<li style="margin: 3px 0;"><a href="#sub-AI-科技-其他相關" style="color:#4A90D9; text-decoration:none; font-size:13px;">└ 其他相關 <span style="color:#999;">(5)</span></a></li>
+</ul></details></li>
+<li class="toc-item"><a href="#cat-馬斯克" style="background:#E74C3C;">馬斯克<span class="count">1</span></a></li>
+<li class="toc-item"><a href="#cat-區塊鏈" style="background:#F39C12;">區塊鏈<span class="count">5</span></a></li>
+<li class="toc-item" style="list-style:none;"><details style="margin:2px 0;"><summary style="cursor:pointer; display:inline-block;"><a href="#cat-法規政策" style="background:#8E44AD;" onclick="event.stopPropagation();">法規政策<span class="count">14</span></a></summary><ul style="margin:4px 0 4px 20px; padding:0; list-style:none;"><li style="margin: 3px 0;"><a href="#sub-法規政策-加密貨幣事件" style="color:#8E44AD; text-decoration:none; font-size:13px;">└ 加密貨幣事件 <span style="color:#999;">(5)</span></a></li>
+<li style="margin: 3px 0;"><a href="#sub-法規政策-地區衝突動向" style="color:#8E44AD; text-decoration:none; font-size:13px;">└ 地區衝突動向 <span style="color:#999;">(5)</span></a></li>
+<li style="margin: 3px 0;"><a href="#sub-法規政策-國際政策與合作" style="color:#8E44AD; text-decoration:none; font-size:13px;">└ 國際政策與合作 <span style="color:#999;">(4)</span></a></li>
+</ul></details></li>
+<li class="toc-item"><a href="#cat-全球經濟-金融" style="background:#27AE60;">全球經濟/金融<span class="count">1</span></a></li>
+<li class="toc-item"><a href="#cat-地緣政治" style="background:#2C3E50;">地緣政治<span class="count">5</span></a></li>
+<li class="toc-item"><a href="#cat-能源-原物料" style="background:#D35400;">能源/原物料<span class="count">3</span></a></li>
+<li class="toc-item"><a href="#cat-其他" style="background:#95A5A6;">其他<span class="count">1</span></a></li>
+
+    </ul>
+  </div>
+
+  <!-- 分類新聞 -->
+  
+  <div class="category-section">
+    <a name="cat-AI-科技"></a>
+    <h2 class="category-title" style="border-bottom-color:#4A90D9;">
+      AI 科技
+      <span class="badge" style="background:#4A90D9;">16 則</span>
+    </h2>
+    
+    <div class="sub-category">
+      <a name="sub-AI-科技-AI應用與產品"></a>
+      <h3 style="color:#4A90D9; border-left: 3px solid #4A90D9; padding-left: 10px; margin: 0 0 12px 0; font-size: 15px;">
+        AI應用與產品
+        <span style="font-size: 12px; color: #999; font-weight: 400;">（3 則）</span>
+      </h3>
+      <div class="news-item" style="border-left-color:#4A90D9; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://techcrunch.com/2026/03/28/bluesky-leans-into-ai-with-attie-an-app-for-building-custom-feeds/" target="_blank">Bluesky 以 Attie 電腦視覺應用程式投入人工智能技術</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Bluesky leans into AI with Attie, an app for building custom feeds</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（TechCrunch AI）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#4A90D9; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://techcrunch.com/2026/03/28/anthropics-claude-popularity-with-paying-consumers-is-skyrocketing/" target="_blank">Anthropic的Claude在付費用戶中的-popularity-正急速攀升</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Anthropic’s Claude popularity with paying consumers is skyrocketing</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（TechCrunch AI）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#4A90D9; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.theverge.com/entertainment/903056/suno-ai-music-v5-5-model" target="_blank">Suno 以自訂為重心推出 v5.5 版本</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Suno leans into customization with v5.5</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（The Verge AI）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+    </div>
+    <div class="sub-category">
+      <a name="sub-AI-科技-AI倫理與安全"></a>
+      <h3 style="color:#4A90D9; border-left: 3px solid #4A90D9; padding-left: 10px; margin: 0 0 12px 0; font-size: 15px;">
+        AI倫理與安全
+        <span style="font-size: 12px; color: #999; font-weight: 400;">（2 則）</span>
+      </h3>
+      <div class="news-item" style="border-left-color:#4A90D9; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://techcrunch.com/2026/03/28/stanford-study-outlines-dangers-of-asking-ai-chatbots-for-personal-advice/" target="_blank">斯坦福研究概述了向AI聊天機器人求助個人建議的危險</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Stanford study outlines dangers of asking AI chatbots for personal advice</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（TechCrunch AI）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#4A90D9; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.theverge.com/ai-artificial-intelligence/900400/tiktok-ai-ads-labels-samsung-disclosure" target="_blank">為什麼 TikTok 無法辨識由 AI 生成的廣告？當我卻能識別。</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Why can’t TikTok identify AI generated ads when I can?</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（The Verge AI）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+    </div>
+    <div class="sub-category">
+      <a name="sub-AI-科技-企業動態"></a>
+      <h3 style="color:#4A90D9; border-left: 3px solid #4A90D9; padding-left: 10px; margin: 0 0 12px 0; font-size: 15px;">
+        企業動態
+        <span style="font-size: 12px; color: #999; font-weight: 400;">（3 則）</span>
+      </h3>
+      <div class="news-item" style="border-left-color:#4A90D9; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.ithome.com.tw/news/174739" target="_blank">Oracle資料庫整合AI代理，推無程式碼代理建構器與資料庫層級存取控管</a>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（iThome）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#4A90D9; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://cointelegraph.com/news/google-banks-back-5b-texas-data-center-anthropic?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">Google計畫支援Anthropic投資50億美元資料中心：報告</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Google plans to back $5B data center for Anthropic: Report</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（CoinTelegraph）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#4A90D9; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.scmp.com/opinion/asia-opinion/article/3347725/ai-infrastructure-front-line-lessons-asean-iran-war?utm_source=rss_feed" target="_blank">AI基礎建設站上前線：伊朗戰爭對東協的教訓</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">AI infrastructure on the front line: Lessons for Asean from the Iran war</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（SCMP World）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+    </div>
+    <div class="sub-category">
+      <a name="sub-AI-科技-法律與監管"></a>
+      <h3 style="color:#4A90D9; border-left: 3px solid #4A90D9; padding-left: 10px; margin: 0 0 12px 0; font-size: 15px;">
+        法律與監管
+        <span style="font-size: 12px; color: #999; font-weight: 400;">（2 則）</span>
+      </h3>
+      <div class="news-item" style="border-left-color:#4A90D9; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.coindesk.com/policy/2026/03/28/washington-sues-kalshi-as-states-ramp-up-legal-pressure-against-prediction-markets" target="_blank">華盛頓對Kalshi提起訴訟，各州加緊法律施壓針對預測市場</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Washington sues Kalshi as states ramp up legal pressure against prediction markets</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（CoinDesk）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#4A90D9; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.scmp.com/news/world/middle-east/article/3348271/iran-war-us-amphibious-assault-ship-arrives-mideast-amid-talk-ground-operation?utm_source=rss_feed" target="_blank">伊朗戰爭：美國兩棲攻擊艦抵達中東，傳言將進行地面作戰</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Iran war: US amphibious assault ship arrives in Mideast amid talk of ground operation</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（SCMP World）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+    </div>
+    <div class="sub-category">
+      <a name="sub-AI-科技-地緣政治與衝突"></a>
+      <h3 style="color:#4A90D9; border-left: 3px solid #4A90D9; padding-left: 10px; margin: 0 0 12px 0; font-size: 15px;">
+        地緣政治與衝突
+        <span style="font-size: 12px; color: #999; font-weight: 400;">（1 則）</span>
+      </h3>
+      <div class="news-item" style="border-left-color:#4A90D9; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.aljazeera.com/sports/2026/3/28/verstappen-calls-his-red-bull-undriveable-after-more-f1-woes-at-japan-gp?traffic_source=rss" target="_blank">維斯塔潘稱紅牛賽車在日本大獎賽再度難以駕馭</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Verstappen calls his Red Bull ‘undriveable’ after more F1 woes at Japan GP</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（Al Jazeera）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+    </div>
+    <div class="sub-category">
+      <a name="sub-AI-科技-其他相關"></a>
+      <h3 style="color:#4A90D9; border-left: 3px solid #4A90D9; padding-left: 10px; margin: 0 0 12px 0; font-size: 15px;">
+        其他相關
+        <span style="font-size: 12px; color: #999; font-weight: 400;">（5 則）</span>
+      </h3>
+      <div class="news-item" style="border-left-color:#4A90D9; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.theverge.com/ai-artificial-intelligence/902368/openai-sora-dead-ai-video-generation-competition" target="_blank">為什麼OpenAIkillsoraa</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Why OpenAI killed Sora</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（The Verge AI）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#4A90D9; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://cointelegraph.com/news/tokeniz?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">トークン化プラットフォーム xStocks 引入全新上鏈私有股權基金</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Tokenized platform xStocks brings new private shares fund on-chain</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（CoinTelegraph）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#4A90D9; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://cointelegraph.com/news/ai-agents-can-reshape-arbitrage-prediction-markets?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">AI代理如何重新塑造預測市場中的套利方式</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">How AI agents can reshape arbitrage in prediction markets</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（CoinTelegraph）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#4A90D9; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.ft.com/content/436edf55-9b19-4ac7-9004-94eb13581c51" target="_blank">菲律賓面對能源價格急漲進退兩難</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Philippines ‘between rock and a hard place’ over surging energy prices</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（FT Global Economy）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#4A90D9; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.ft.com/content/7f8cfd99-7c5a-458d-af2c-683f340eaa9c" target="_blank">英國和新加坡推進數位協定，世界貿易組織仍處於僵局</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">UK and Singapore press ahead with digital deal as WTO remains deadlocked</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（FT Global Economy）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+    </div>
+  </div>
+  <div class="category-section">
+    <a name="cat-馬斯克"></a>
+    <h2 class="category-title" style="border-bottom-color:#E74C3C;">
+      馬斯克
+      <span class="badge" style="background:#E74C3C;">1 則</span>
+    </h2>
+    
+      <div class="news-item" style="border-left-color:#E74C3C; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://techcrunch.com/2026/03/28/elon-musks-last-co-founder-reportedly-leaves-xai/" target="_blank">埃隆·馬斯克最後的共同創始人傳言離職 xAI</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Elon Musk’s last co-founder reportedly leaves xAI</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（TechCrunch AI）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+  </div>
+  <div class="category-section">
+    <a name="cat-區塊鏈"></a>
+    <h2 class="category-title" style="border-bottom-color:#F39C12;">
+      區塊鏈
+      <span class="badge" style="background:#F39C12;">5 則</span>
+    </h2>
+    
+      <div class="news-item" style="border-left-color:#F39C12; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.coindesk.com/opinion/2026/03/28/crypto-needs-a-reset-before-the-next-bull-run" target="_blank">加密貨幣需要在下一次牛勢來臨前進行重置</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Crypto needs a reset before the next bull run</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（CoinDesk）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#F39C12; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.coindesk.com/policy/2026/03/28/canada-moves-to-ban-crypto-donations-for-election-campaigns-following-uk" target="_blank">加拿大跟隨英國之後，擬禁止加密貨幣選舉捐款</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Canada moves to ban crypto donations for election campaigns following UK</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（CoinDesk）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#F39C12; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.coindesk.com/markets/2026/03/28/why-bitcoin-s-compressed-valuation-offers-reduced-downside-risk-versus-stocks" target="_blank">為什麼/bitcoin的「壓縮」估值相較股票提供了減緩下檔風險的可能性</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Why bitcoin's 'compressed' valuation offers reduced downside risk versus stocks</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（CoinDesk）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#F39C12; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.coindesk.com/tech/2026/03/28/here-s-how-bitcoin-ethereum-and-other-networks-are-preparing-for-the-looming-quantum-threat" target="_blank">這裡是如何應對迫在眉睫的量子威脅：比特币、以太坊和其他網絡的準備工作</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Here's how bitcoin, Ethereum and other networks are preparing for the looming quantum threat</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（CoinDesk）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#F39C12; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.coindesk.com/business/2026/03/28/crypto-s-future-is-bright-in-the-context-of-ai-s-assault-on-software-firms-says-kraken-backed-investment-firm" target="_blank">在AI對軟件公司發動攻擊的背景下，Kraken 背書的投资公司認為加密貨幣的未來一片光明</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Crypto's future is bright in the context of AI's assault on software firms, says Kraken-backed investment firm</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（CoinDesk）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+  </div>
+  <div class="category-section">
+    <a name="cat-法規政策"></a>
+    <h2 class="category-title" style="border-bottom-color:#8E44AD;">
+      法規政策
+      <span class="badge" style="background:#8E44AD;">14 則</span>
+    </h2>
+    
+    <div class="sub-category">
+      <a name="sub-法規政策-加密貨幣事件"></a>
+      <h3 style="color:#8E44AD; border-left: 3px solid #8E44AD; padding-left: 10px; margin: 0 0 12px 0; font-size: 15px;">
+        加密貨幣事件
+        <span style="font-size: 12px; color: #999; font-weight: 400;">（5 則）</span>
+      </h3>
+      <div class="news-item" style="border-left-color:#8E44AD; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.coindesk.com/markets/2026/03/28/kalshi-secures-license-to-offer-margin-trading-to-institutional-investors" target="_blank">Kalshi 註冊獲准向機構投資者提供杠桿交易服務</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Kalshi secures license to offer margin trading to institutional investors</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（CoinDesk）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#8E44AD; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.coindesk.com/tech/2026/03/28/here-s-what-next-as-anthropic-s-most-powerful-ai-model-leaked-via-unsecured-data-cache" target="_blank">Anthropic最強大的人工智慧模型因未加密的資料緩存外洩，接下來將如何發展</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Here's what next as Anthropic's most powerful AI model leaked via unsecured data cache</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（CoinDesk）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#8E44AD; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.theblock.co/post/395574/sen-warren-targets-bitmain-trump-family-ties-in-letter-to-commerce-secretary-lutnick-bloomberg?utm_source=rss&utm_medium=rss" target="_blank">參議員華倫在致商務部長魯特尼克的信中針對比特main與特朗普家族的關聯：彭博社</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Sen. Warren targets Bitmain-Trump family ties in letter to Commerce Secretary Lutnick: Bloomberg</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（The Block）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#8E44AD; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://cointelegraph.com/news/kalshi-legal-woes-grow?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">Kalshi 法律困擾加劇， washington 狀賭博訴訟加入</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Kalshi legal woes grow with Washington state gambling suit</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（CoinTelegraph）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#8E44AD; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://cointelegraph.com/news/warren-bitmain-us-security-concerns-probe-report?utm_source=rss_feed&utm_medium=rss&utm_campaign=rss_partner_inbound" target="_blank">華盛頓探查中國基層Bitmain因應美國安全疑慮：報告</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Warren probes China-based Bitmain over US security concerns: Report</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（CoinTelegraph）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+    </div>
+    <div class="sub-category">
+      <a name="sub-法規政策-地區衝突動向"></a>
+      <h3 style="color:#8E44AD; border-left: 3px solid #8E44AD; padding-left: 10px; margin: 0 0 12px 0; font-size: 15px;">
+        地區衝突動向
+        <span style="font-size: 12px; color: #999; font-weight: 400;">（5 則）</span>
+      </h3>
+      <div class="news-item" style="border-left-color:#8E44AD; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.aljazeera.com/news/2026/3/29/as-war-on-iran-enters-second-month-yemens-houthis-open-new-front?traffic_source=rss" target="_blank">伊朗戰爭進入第二個月，也門胡遜武裝開辟新戰場</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">As war on Iran enters second month, Yemen’s Houthis open new front</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（Al Jazeera）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#8E44AD; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.aljazeera.com/news/2026/3/28/vice-president-jd-vance-tops-cpacs-straw-poll-to-be-us-president-in-2028?traffic_source=rss" target="_blank">JD·范斯副總統在CPAC的初步投票中蟬聯2028年美國總統選舉最熱門人選</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Vice President JD Vance tops CPAC’s straw poll to be US president in 2028</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（Al Jazeera）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#8E44AD; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.aljazeera.com/news/2026/3/28/pakistan-secures-iran-deal-to-send-20-ships-through-strait-of-hormuz?traffic_source=rss" target="_blank">巴基斯坦與伊朗達成 DEAL 允許通過霍爾木茲 Strait 輸送 20 艘船隻</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Pakistan secures Iran deal to send 20 ships through Strait of Hormuz</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（Al Jazeera）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#8E44AD; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.aljazeera.com/gallery/2026/3/28/photos-no-kings-protests-erupt-across-the-us-with-a-minnesota-focus?traffic_source=rss" target="_blank">「No Kings」抗議活動在美国各地爆發，以明尼蘇達州為焦點</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">‘No Kings’ protests erupt across the US, with a Minnesota focus</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（Al Jazeera）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#8E44AD; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.scmp.com/news/world/united-states-canada/article/3348264/us-israel-war-iran-rages-millions-angry-trump-expected-fill-us-streets?utm_source=rss_feed" target="_blank">隨著美國與以色列對抗伊朗戰火延燒，在「無王日」反-Trump者抗議</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">As US-Israel war on Iran rages on, anti-Trumpers protest on ‘No Kings’ day</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（SCMP World）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+    </div>
+    <div class="sub-category">
+      <a name="sub-法規政策-國際政策與合作"></a>
+      <h3 style="color:#8E44AD; border-left: 3px solid #8E44AD; padding-left: 10px; margin: 0 0 12px 0; font-size: 15px;">
+        國際政策與合作
+        <span style="font-size: 12px; color: #999; font-weight: 400;">（4 則）</span>
+      </h3>
+      <div class="news-item" style="border-left-color:#8E44AD; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.scmp.com/news/china/diplomacy/article/3348243/how-china-stepping-cultural-repatriation-void-left-retreating-us?utm_source=rss_feed" target="_blank">中國如何填補美國撤退後留下的文化回流空白</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">How China is stepping into the cultural repatriation void left by a retreating US</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（SCMP China）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#8E44AD; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.scmp.com/news/china/military/article/3348257/beijing-tightens-drone-rules-citing-low-altitude-security-concerns?utm_source=rss_feed" target="_blank">北京緊縮無人機規則，考量「低空安全」疑慮</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Beijing tightens drone rules, citing ‘low-altitude security’ concerns</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（SCMP China）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#8E44AD; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.bbc.com/zhongwen/articles/c4gdx5dyer7o/trad?at_medium=RSS&at_campaign=rss" target="_blank">「沒人幫忙媽媽會瘋掉」——台灣放寬外傭門檻，能解救誰？</a>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（BBC 中文）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#8E44AD; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.aljazeera.com/news/2026/3/28/france-opens-probe-into-suspected-attack-on-bank-of-america-in-paris?traffic_source=rss" target="_blank">法國展開調查疑似針對巴黎 BANK OF AMERICA 的攻擊事件</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">France opens probe into suspected attack on Bank of America in Paris</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（Al Jazeera）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+    </div>
+  </div>
+  <div class="category-section">
+    <a name="cat-全球經濟-金融"></a>
+    <h2 class="category-title" style="border-bottom-color:#27AE60;">
+      全球經濟/金融
+      <span class="badge" style="background:#27AE60;">1 則</span>
+    </h2>
+    
+      <div class="news-item" style="border-left-color:#27AE60; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://oilprice.com/Energy/Energy-General/Washington-Plans-1-Billion-Deal-to-Kill-Wind-Power-as-Energy-Prices-Rise.html" target="_blank">華盛頓擬以10億美元 DEAL來遏止風電作為能源價格上漲的措施</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Washington Plans $1 Billion Deal to Kill Wind Power as Energy Prices Rise</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（OilPrice.com）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+  </div>
+  <div class="category-section">
+    <a name="cat-地緣政治"></a>
+    <h2 class="category-title" style="border-bottom-color:#2C3E50;">
+      地緣政治
+      <span class="badge" style="background:#2C3E50;">5 則</span>
+    </h2>
+    
+      <div class="news-item" style="border-left-color:#2C3E50; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.blocktempo.com/circle-usdc-blacklist-freezes-businesses-north-korea-compliance-failure-exposed/" target="_blank">Circle 單方面凍結 16 家企業錢包，北韓駭客贓款卻袖手旁觀</a>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（動區動趨）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#2C3E50; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.aljazeera.com/news/liveblog/2026/3/29/iran-war-live-houthis-attack-israel-anti-war-protesters-rally-in-tel-aviv?traffic_source=rss" target="_blank">伊朗戰情實時更新： Tehrnan 警告美國及以色列大學；荷斯希派發射飛彈</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Iran war live: Tehran warns US, Israeli universities; Houthis fire missiles</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（Al Jazeera）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#2C3E50; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.aljazeera.com/video/newsfeed/2026/3/28/key-moments-in-first-month-of-us-israeli-war-on-iran?traffic_source=rss" target="_blank">美國對伊朗戰爭首月關鍵時刻</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Key moments in first month of US-Israeli war on Iran</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（Al Jazeera）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#2C3E50; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.aljazeera.com/video/newsfeed/2026/3/28/missiles-hit-southern-israeli-city-of-eilat?traffic_source=rss" target="_blank">导弹擊中以色列南部埃伊爾特市</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Missiles hit southern Israeli city of Eilat</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（Al Jazeera）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#2C3E50; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.aljazeera.com/news/2026/3/28/lawmakers-push-npt-exit-as-us-israel-hit-irans-nuclear-sites-steel-plants?traffic_source=rss" target="_blank">隨著戰爭肆虐，伊朗政治家力促退出核武協議</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">As war rages, Iranian politicians push for exit from nuclear weapons treaty</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（Al Jazeera）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+  </div>
+  <div class="category-section">
+    <a name="cat-能源-原物料"></a>
+    <h2 class="category-title" style="border-bottom-color:#D35400;">
+      能源/原物料
+      <span class="badge" style="background:#D35400;">3 則</span>
+    </h2>
+    
+      <div class="news-item" style="border-left-color:#D35400; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.ithome.com.tw/review/173988" target="_blank">支援減量、遮罩與分層儲存，Cribl打造企業級資料處理引擎</a>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（iThome）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#D35400; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.scmp.com/news/world/europe/article/3348268/french-anti-terror-prosecutors-probe-foiled-paris-bomb-plot?utm_source=rss_feed" target="_blank">法國警方阻止巴黎美國銀行外的炸彈襲擊企圖</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">French police foil Paris bomb attack outside US bank</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（SCMP World）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+      <div class="news-item" style="border-left-color:#D35400; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://oilprice.com/Energy/Crude-Oil/Drillers-See-Triple-Digit-Crude-and-Hit-the-Brakes.html" target="_blank">鑽井工人見到三位數的原油價格因而踩下刹车</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Drillers See Triple-Digit Crude and Hit the Brakes</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（OilPrice.com）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+  </div>
+  <div class="category-section">
+    <a name="cat-其他"></a>
+    <h2 class="category-title" style="border-bottom-color:#95A5A6;">
+      其他
+      <span class="badge" style="background:#95A5A6;">1 則</span>
+    </h2>
+    
+      <div class="news-item" style="border-left-color:#95A5A6; padding: 6px 12px; margin-bottom: 4px;">
+        <h3 style="margin: 0; font-size: 14px;"><a href="https://www.aljazeera.com/sports/2026/3/28/defending-champion-aryna-sabalenka-and-coco-gauff-meet-for-the-miami-open-t?traffic_source=rss" target="_blank">衛冕冠軍亞琳娜·薩巴倫卡與科코·高夫將在邁阿密公開賽決賽碰頭</a><div style="font-size: 12px; color: #999; font-weight: 400; margin-top: 2px;">Defending champion Aryna Sabalenka and Coco Gauff meet in Miami Open final</div>
+          <span style="font-size: 11px; color: #999; font-weight: 400;">（Al Jazeera）</span>
+          <a href="#top" style="font-size: 11px; color: #bbb; text-decoration: none; margin-left: 6px;">↑</a>
+        </h3>
+      </div>
+  </div>
+
+  <!-- 頁尾 -->
+  <div class="footer">
+    此郵件由「每日新聞整理系統」自動生成<br>
+    AI 摘要僅供參考，請點擊原文連結閱讀完整報導
+  </div>
+</div>
+</body>
+</html>
